@@ -4,6 +4,7 @@
         <LangVersion>latest</LangVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
 
@@ -13,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AutoDI\AutoDI.csproj" />
+        <ProjectReference Include="..\AutoDI\AutoDI.csproj" PrivateAssets="All"/>
     </ItemGroup>
 
 </Project>
