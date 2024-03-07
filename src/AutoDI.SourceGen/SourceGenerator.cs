@@ -12,9 +12,9 @@ namespace AutoDI.SourceGen;
 [Generator]
 internal class SourceGenerator : ISourceGenerator
 {
-    private const string _singletonTemplate = "services.AddSingleton<{0}>({1});";
-    private const string _scopedTemplate = "services.AddScoped<{0}>({1});";
-    private const string _transientTemplate = "services.AddTransient<{0}>({1});";
+    private const string SingletonTemplate = "services.AddSingleton<{0}>({1});";
+    private const string ScopedTemplate = "services.AddScoped<{0}>({1});";
+    private const string TransientTemplate = "services.AddTransient<{0}>({1});";
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -57,9 +57,9 @@ internal class SourceGenerator : ISourceGenerator
         {
             var template = lifetime switch
             {
-                "ServiceLifetime.Singleton" => _singletonTemplate,
-                "ServiceLifetime.Transient" => _transientTemplate,
-                "ServiceLifetime.Scoped"    => _scopedTemplate,
+                "ServiceLifetime.Singleton" => SingletonTemplate,
+                "ServiceLifetime.Transient" => TransientTemplate,
+                "ServiceLifetime.Scoped"    => ScopedTemplate,
                 _                           => throw new ArgumentException("Invalid lifetime.")
             };
 
