@@ -18,11 +18,11 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/singleton", ([FromServices] ISingletonService service) => service.GetSingletonGuid());
-app.MapGet("/scoped", ([FromServices] IScopedService service) => service.GetScopedGuid());
-app.MapGet("/transient", ([FromServices] ITransientService service) => service.GetTransientGuid());
-app.MapGet("/abstract", ([FromServices] AbstractService service) => service.GetAbstractGuid());
-app.MapGet("/self", ([FromServices] SelfService service) => service.GetSelfGuid());
+app.MapGet("/singleton", ([FromServices] ISingletonService service) => service.GetSingletonGuid);
+app.MapGet("/scoped", ([FromServices] IScopedService service) => service.GetScopedGuid);
+app.MapGet("/transient", ([FromServices] ITransientService service) => service.GetTransientGuid);
+app.MapGet("/abstract", ([FromServices] AbstractService service) => service.GetAbstractGuid);
+app.MapGet("/self", ([FromServices] SelfService service) => service.GetSelfGuid);
 
 app.Run();
 
@@ -34,13 +34,13 @@ namespace ExampleWebAPI
 
     public interface ISingletonService
     {
-        Guid GetSingletonGuid();
+        Guid GetSingletonGuid { get; }
     }
 
     [RegisterService(typeof(ISingletonService), ServiceLifetime.Singleton)]
     public sealed class SingletonService : ISingletonService
     {
-        public Guid GetSingletonGuid() => Guid.NewGuid();
+        public Guid GetSingletonGuid { get; } = Guid.NewGuid();
     }
 
     /*********************/
@@ -49,13 +49,13 @@ namespace ExampleWebAPI
 
     public interface IScopedService
     {
-        Guid GetScopedGuid();
+        Guid GetScopedGuid { get; }
     }
 
     [RegisterService(typeof(IScopedService), ServiceLifetime.Scoped)]
     public sealed class ScopedService : IScopedService
     {
-        public Guid GetScopedGuid() => Guid.NewGuid();
+        public Guid GetScopedGuid { get; } = Guid.NewGuid();
     }
 
     /*********************/
@@ -64,13 +64,13 @@ namespace ExampleWebAPI
 
     public interface ITransientService
     {
-        Guid GetTransientGuid();
+        Guid GetTransientGuid { get; }
     }
 
     [RegisterService(typeof(ITransientService), ServiceLifetime.Transient)]
     public sealed class TransientService : ITransientService
     {
-        public Guid GetTransientGuid() => Guid.NewGuid();
+        public Guid GetTransientGuid { get; } = Guid.NewGuid();
     }
 
     /*********************/
@@ -79,13 +79,13 @@ namespace ExampleWebAPI
 
     public abstract class AbstractService
     {
-        public abstract Guid GetAbstractGuid();
+        public abstract Guid GetAbstractGuid { get; }
     }
 
     [RegisterService(typeof(AbstractService), ServiceLifetime.Singleton)]
     public sealed class ChildService : AbstractService
     {
-        public override Guid GetAbstractGuid() => Guid.NewGuid();
+        public override Guid GetAbstractGuid { get; } = Guid.NewGuid();
     }
 
     /*********************/
@@ -95,6 +95,6 @@ namespace ExampleWebAPI
     [RegisterService(typeof(SelfService), ServiceLifetime.Singleton)]
     public sealed class SelfService
     {
-        public Guid GetSelfGuid() => Guid.NewGuid();
+        public Guid GetSelfGuid { get; } = Guid.NewGuid();
     }
 }

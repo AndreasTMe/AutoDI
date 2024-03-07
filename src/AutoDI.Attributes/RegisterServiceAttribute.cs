@@ -9,6 +9,8 @@ namespace AutoDI.Attributes
     {
         public Type Service { get; }
 
+        public string ServiceNamespace { get; }
+
         public ServiceLifetime Lifetime { get; }
 
         public string Key { get; }
@@ -16,6 +18,7 @@ namespace AutoDI.Attributes
         public RegisterServiceAttribute(Type service, ServiceLifetime lifetime, string key = "")
         {
             Service = service;
+            ServiceNamespace = service.Namespace ?? string.Empty;
             Lifetime = lifetime;
             Key = key;
         }

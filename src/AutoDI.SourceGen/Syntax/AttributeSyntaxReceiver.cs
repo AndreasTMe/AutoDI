@@ -3,11 +3,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System.Collections.Generic;
 
-namespace AutoDI.SourceGen.SyntaxReceivers;
+namespace AutoDI.SourceGen.Syntax;
 
 internal readonly record struct AttributeDataCapture(
-    string Service,
-    string Implementation,
+    (string Name, string Namespace) Service,
+    (string Name, string Namespace) Implementation,
     string Lifetime,
     string? Key);
 

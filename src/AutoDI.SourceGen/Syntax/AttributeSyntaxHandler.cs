@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace AutoDI.SourceGen.SyntaxReceivers;
+namespace AutoDI.SourceGen.Syntax;
 
 internal sealed class AttributeSyntaxHandler
 {
@@ -27,6 +27,9 @@ internal sealed class AttributeSyntaxHandler
         var classDeclaration = attributeSyntax.FirstAncestorOrSelf<ClassDeclarationSyntax>();
         Debug.Assert(classDeclaration is not null, "Attribute must be applied to a class.");
 
+        var classNamespace = classDeclaration!.FirstAncestorOrSelf<NamespaceDeclarationSyntax>();
+        Debug.Assert(classNamespace is not null, "Class must be in a namespace.");
+
         var arguments = attributeSyntax.ArgumentList?.Arguments;
         Debug.Assert(arguments is not null, "Attribute must have arguments.");
 
@@ -41,7 +44,11 @@ internal sealed class AttributeSyntaxHandler
 
         var key = arguments?.Skip(2).FirstOrDefault()?.ToString();
 
-        capture = new AttributeDataCapture(service!, classDeclaration!.Identifier.Text, lifetime!, key);
+        capture = new AttributeDataCapture(
+            (Name: service!, Namespace: ""), // TODO: Capture this namespace
+            (Name: classDeclaration!.Identifier.ValueText, Namespace: classNamespace!.Name.ToString()),
+            lifetime!,
+            key);
 
         return true;
     }
