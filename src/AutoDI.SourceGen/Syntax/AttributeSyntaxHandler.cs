@@ -38,6 +38,8 @@ internal sealed class AttributeSyntaxHandler
             .Replace("typeof(", string.Empty)
             .Replace(")", string.Empty);
         Debug.Assert(service is not null, "Service argument is required.");
+        
+        // TODO: Check if the implementation actually implements the service
 
         var lifetime = arguments?.Skip(1).FirstOrDefault()?.ToString();
         Debug.Assert(lifetime is not null, "Lifetime argument is required.");

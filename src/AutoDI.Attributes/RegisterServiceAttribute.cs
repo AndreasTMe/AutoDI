@@ -9,7 +9,7 @@ namespace AutoDI.Attributes
     {
         public Type Service { get; }
 
-        public string ServiceNamespace { get; }
+        public string ServiceNamespace { get; } // TODO: Is this needed?
 
         public ServiceLifetime Lifetime { get; }
 
