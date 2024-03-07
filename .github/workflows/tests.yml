@@ -3,8 +3,8 @@ name: Tests
 on:
     push:
         paths:
-            - "src/AutoDI/**/*.cs"
-            - "src/AutoDI/**/*.csproj"
+            - "src/AutoDI.Attributes/**/*.cs"
+            - "src/AutoDI.Attributes/**/*.csproj"
             - "src/AutoDI.SourceGen/**/*.cs"
             - "src/AutoDI.SourceGen/**/*.csproj"
             - "tests/AutoDI.SourceGen.Tests/**/*.cs"
@@ -13,8 +13,8 @@ on:
         branches:
             - main
         paths:
-            - "src/AutoDI/**/*.cs"
-            - "src/AutoDI/**/*.csproj"
+            - "src/AutoDI.Attributes/**/*.cs"
+            - "src/AutoDI.Attributes/**/*.csproj"
             - "src/AutoDI.SourceGen/**/*.cs"
             - "src/AutoDI.SourceGen/**/*.csproj"
             - "tests/AutoDI.SourceGen.Tests/**/*.cs"
