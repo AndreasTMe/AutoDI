@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI.SourceGen", "src\Aut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI.SourceGen.Tests", "tests\AutoDI.SourceGen.Tests\AutoDI.SourceGen.Tests.csproj", "{E6359F0D-351F-4BC8-82E1-A7FF0E42D9B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI", "src\AutoDI\AutoDI.csproj", "{169CBCF1-7D99-419C-876B-9308C3B6F915}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI.Attributes", "src\AutoDI.Attributes\AutoDI.Attributes.csproj", "{169CBCF1-7D99-419C-876B-9308C3B6F915}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWebAPI", "src\ExampleWebAPI\ExampleWebAPI.csproj", "{DB724444-1E33-4CC3-BA0D-9F4545C7FD98}"
 EndProject

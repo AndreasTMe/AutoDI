@@ -1,0 +1,17 @@
+﻿<Project>
+
+    <PropertyGroup>
+        <PackageVersion>0.0.1</PackageVersion>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>

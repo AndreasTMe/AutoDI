@@ -12,8 +12,7 @@ using System;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AutoInject();
+builder.Services.AddAutoDI();
 
 var app = builder.Build();
 
@@ -38,7 +37,7 @@ namespace ExampleWebAPI
         Guid GetSingletonGuid();
     }
 
-    [RegisterService<ISingletonService>(ServiceLifetime.Singleton)]
+    [RegisterService(typeof(ISingletonService), ServiceLifetime.Singleton)]
     public sealed class SingletonService : ISingletonService
     {
         public Guid GetSingletonGuid() => Guid.NewGuid();
@@ -53,7 +52,7 @@ namespace ExampleWebAPI
         Guid GetScopedGuid();
     }
 
-    [RegisterService<IScopedService>(ServiceLifetime.Scoped)]
+    [RegisterService(typeof(IScopedService), ServiceLifetime.Scoped)]
     public sealed class ScopedService : IScopedService
     {
         public Guid GetScopedGuid() => Guid.NewGuid();
@@ -68,7 +67,7 @@ namespace ExampleWebAPI
         Guid GetTransientGuid();
     }
 
-    [RegisterService<ITransientService>(ServiceLifetime.Transient)]
+    [RegisterService(typeof(ITransientService), ServiceLifetime.Transient)]
     public sealed class TransientService : ITransientService
     {
         public Guid GetTransientGuid() => Guid.NewGuid();
@@ -83,7 +82,7 @@ namespace ExampleWebAPI
         public abstract Guid GetAbstractGuid();
     }
 
-    [RegisterService<AbstractService>(ServiceLifetime.Singleton)]
+    [RegisterService(typeof(AbstractService), ServiceLifetime.Singleton)]
     public sealed class ChildService : AbstractService
     {
         public override Guid GetAbstractGuid() => Guid.NewGuid();
@@ -93,7 +92,7 @@ namespace ExampleWebAPI
     /* Self Service      */
     /*********************/
 
-    [RegisterService<SelfService>(ServiceLifetime.Singleton)]
+    [RegisterService(typeof(SelfService), ServiceLifetime.Singleton)]
     public sealed class SelfService
     {
         public Guid GetSelfGuid() => Guid.NewGuid();

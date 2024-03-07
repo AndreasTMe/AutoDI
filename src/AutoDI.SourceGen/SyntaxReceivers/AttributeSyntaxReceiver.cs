@@ -2,34 +2,29 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace AutoDI.SourceGen.SyntaxReceivers;
 
-internal sealed class AttributeSyntaxReceiver
-{
-    private const string AttributeName = "RegisterService";
+internal readonly record struct AttributeDataCapture(
+    string Service,
+    string Implementation,
+    string Lifetime,
+    string? Key);
 
-    public List<Capture> Captures { get; } = new();
+internal sealed class AttributeSyntaxReceiver : ISyntaxReceiver
+{
+    private readonly AttributeSyntaxHandler _attributeSyntaxHandler = new();
+
+    public List<AttributeDataCapture> Captures { get; } = new();
 
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
-        if (syntaxNode is not AttributeSyntax attributeSyntax
-            || !attributeSyntax.Name.ToString().StartsWith(AttributeName))
+        if (syntaxNode is not AttributeSyntax attributeSyntax)
             return;
 
-        var classDeclaration = attributeSyntax.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+        if (!_attributeSyntaxHandler.TryCaptureAttributeData(attributeSyntax, out var capture))
+            return;
 
-        var serviceName = attributeSyntax.Name.ToString().Split('<', '>')[1];
-
-        var lifetime = attributeSyntax.ArgumentList?.Arguments.FirstOrDefault()?.ToString();
-        Debug.Assert(lifetime is not null, "Lifetime argument is required.");
-
-        var key = attributeSyntax.ArgumentList?.Arguments.Skip(1).FirstOrDefault()?.ToString();
-
-        Captures.Add(new Capture(serviceName, classDeclaration!.Identifier.Text, lifetime!, key));
+        Captures.Add(capture);
     }
-
-    public readonly record struct Capture(string Service, string Implementation, string Lifetime, string? Key);
 }

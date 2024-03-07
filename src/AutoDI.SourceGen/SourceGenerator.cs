@@ -1,4 +1,5 @@
-﻿using AutoDI.SourceGen.SyntaxReceivers;
+﻿using AutoDI.Attributes;
+using AutoDI.SourceGen.SyntaxReceivers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -13,12 +14,12 @@ internal class SourceGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new MainSyntaxReceiver());
+        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
-        var receiver = context.SyntaxReceiver as MainSyntaxReceiver;
+        var receiver = context.SyntaxReceiver as AttributeSyntaxReceiver;
 
         // TODO: Add code generation logic here
 
@@ -52,7 +53,7 @@ internal class SourceGenerator : ISourceGenerator
                                         SingletonList<MemberDeclarationSyntax>(
                                             MethodDeclaration(
                                                     PredefinedType(Token(SyntaxKind.VoidKeyword)),
-                                                    Identifier("AutoInject"))
+                                                    Identifier("AddAutoDI"))
                                                 .WithModifiers(
                                                     TokenList(
                                                     [
