@@ -1,4 +1,5 @@
 ﻿using AutoDI.Attributes;
+using AutoDI.SourceGen.Internal;
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -38,8 +39,9 @@ internal sealed class AttributeSyntaxHandler
             .Replace("typeof(", string.Empty)
             .Replace(")", string.Empty);
         Debug.Assert(service is not null, "Service argument is required.");
-        
-        // TODO: Check if the implementation actually implements the service
+
+        if (!ImplementsOrIsService(classDeclaration, service!))
+            ThrowHelpers.ThrowAutoDIException(SR.ClassMustEitherImplementOrBeTheService);
 
         var lifetime = arguments?.Skip(1).FirstOrDefault()?.ToString();
         Debug.Assert(lifetime is not null, "Lifetime argument is required.");
@@ -48,10 +50,19 @@ internal sealed class AttributeSyntaxHandler
 
         capture = new AttributeDataCapture(
             (Name: service!, Namespace: ""), // TODO: Capture this namespace
-            (Name: classDeclaration!.Identifier.ValueText, Namespace: classNamespace!.Name.ToString()),
+            (Name: classDeclaration.Identifier.ValueText, Namespace: classNamespace!.Name.ToString()),
             lifetime!,
             key);
 
         return true;
     }
+
+    private static bool ImplementsOrIsService(BaseTypeDeclarationSyntax typeDeclaration, string service) =>
+        (typeDeclaration
+                .BaseList is not null
+            && typeDeclaration
+                .BaseList
+                .Types
+                .Any(t => t.ToString() == service))
+        || service == typeDeclaration.Identifier.Text;
 }

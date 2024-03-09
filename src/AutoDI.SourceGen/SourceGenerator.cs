@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,31 +47,32 @@ internal class SourceGenerator : ISourceGenerator
         builder.AppendLine();
         builder.AppendLine("namespace AutoDI.Extensions");
         builder.AppendLine("{");
-        builder.AppendLine("    public static class AutoDI_ServiceCollectionExtensions");
-        builder.AppendLine("    {");
-        builder.AppendLine("        public static void AddAutoDI(this IServiceCollection services)");
-        builder.AppendLine("        {");
+        builder.AppendLine("\tpublic static class AutoDI_ServiceCollectionExtensions");
+        builder.AppendLine("\t{");
+        builder.AppendLine("\t\tpublic static void AddAutoDI(this IServiceCollection services)");
+        builder.AppendLine("\t\t{");
 
         foreach (var (service, implementation, lifetime, key) in receiver.Captures)
         {
+#pragma warning disable CS8509
             var template = lifetime switch
             {
                 "ServiceLifetime.Singleton" => SingletonTemplate,
                 "ServiceLifetime.Transient" => TransientTemplate,
                 "ServiceLifetime.Scoped"    => ScopedTemplate,
-                _                           => throw new ArgumentException("Invalid lifetime.")
             };
+#pragma warning restore CS8509
 
             var genericArguments = service.Name == implementation.Name
                 ? service.Name
                 : $"{service.Name}, {implementation.Name}";
             var line = string.Format(template, genericArguments, key ?? "");
 
-            builder.AppendLine($"            {line}");
+            builder.AppendLine($"\t\t\t{line}");
         }
 
-        builder.AppendLine("        }");
-        builder.AppendLine("    }");
+        builder.AppendLine("\t\t}");
+        builder.AppendLine("\t}");
         builder.AppendLine("}");
 
         context.AddSource("AutoDIServiceCollectionExtensions.g.cs", builder.ToString());
