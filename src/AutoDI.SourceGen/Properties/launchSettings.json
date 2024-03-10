@@ -3,7 +3,7 @@
     "profiles": {
         "Generators": {
             "commandName": "DebugRoslynComponent",
-            "targetProject": "../ExampleWebAPI/ExampleWebAPI.csproj"
+            "targetProject": "../../tests/ExampleWebAPI/ExampleWebAPI.csproj"
         }
     }
 }

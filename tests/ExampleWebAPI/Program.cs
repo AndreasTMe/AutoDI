@@ -1,53 +1,59 @@
-﻿using AutoDI.Attributes;
+using AutoDI.Attributes;
 
-using ExampleWebAPI.InnerNamespace;
+using ExampleWebAPI;
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAutoDI();
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+
+app.MapGet("/singleton", ([FromServices] ISingletonService service) => service.GetSingletonGuid);
+app.MapGet("/scoped", ([FromServices] IScopedService service) => service.GetScopedGuid);
+app.MapGet("/transient", ([FromServices] ITransientService service) => service.GetTransientGuid);
+app.MapGet("/abstract", ([FromServices] AbstractService service) => service.GetAbstractGuid);
+app.MapGet("/self", ([FromServices] SelfService service) => service.GetSelfGuid);
+
+app.Run();
+
 namespace ExampleWebAPI
 {
-    [InjectService(typeof(ITestService), ServiceLifetime.Singleton, serviceNamespace: "ExampleWebAPI.InnerNamespace")]
-    public sealed class TestService : ITestService
-    {
-        public Guid GetTestGuid { get; } = Guid.NewGuid();
-    }
-    
     /*********************/
     /* Singleton Service */
     /*********************/
 
+    [IsDependency]
     public interface ISingletonService
     {
         Guid GetSingletonGuid { get; }
     }
 
-    [InjectService(typeof(ISingletonService), ServiceLifetime.Singleton)]
+    [InjectDependency(typeof(ISingletonService), ServiceLifetime.Singleton)]
     public sealed class SingletonService : ISingletonService
     {
-        private readonly ITestService _testService;
-
         public Guid GetSingletonGuid { get; } = Guid.NewGuid();
-
-        public SingletonService(ITestService testService)
-        {
-            _testService = testService;
-
-            Console.WriteLine($"TestService: {_testService.GetTestGuid}");
-        }
     }
 
     /*********************/
     /* Scoped Service    */
     /*********************/
 
+    [IsDependency]
     public interface IScopedService
     {
         Guid GetScopedGuid { get; }
     }
 
-    [InjectService(typeof(IScopedService), ServiceLifetime.Scoped)]
+    [InjectDependency(typeof(IScopedService), ServiceLifetime.Scoped)]
     public sealed class ScopedService : IScopedService
     {
         public Guid GetScopedGuid { get; } = Guid.NewGuid();
@@ -57,12 +63,13 @@ namespace ExampleWebAPI
     /* Transient Service */
     /*********************/
 
+    [IsDependency]
     public interface ITransientService
     {
         Guid GetTransientGuid { get; }
     }
 
-    [InjectService(typeof(ITransientService), ServiceLifetime.Transient)]
+    [InjectDependency(typeof(ITransientService), ServiceLifetime.Transient)]
     public sealed class TransientService : ITransientService
     {
         public Guid GetTransientGuid { get; } = Guid.NewGuid();
@@ -72,12 +79,13 @@ namespace ExampleWebAPI
     /* Abstract Service  */
     /*********************/
 
+    [IsDependency]
     public abstract class AbstractService
     {
         public abstract Guid GetAbstractGuid { get; }
     }
 
-    [InjectService(typeof(AbstractService), ServiceLifetime.Singleton)]
+    [InjectDependency(typeof(AbstractService), ServiceLifetime.Singleton)]
     public sealed class ChildService : AbstractService
     {
         public override Guid GetAbstractGuid { get; } = Guid.NewGuid();
@@ -87,17 +95,9 @@ namespace ExampleWebAPI
     /* Self Service      */
     /*********************/
 
-    [InjectService(typeof(SelfService), ServiceLifetime.Singleton)]
+    [InjectDependency(typeof(SelfService), ServiceLifetime.Singleton)]
     public sealed class SelfService
     {
         public Guid GetSelfGuid { get; } = Guid.NewGuid();
-    }
-}
-
-namespace ExampleWebAPI.InnerNamespace
-{
-    public interface ITestService
-    {
-        Guid GetTestGuid { get; }
     }
 }

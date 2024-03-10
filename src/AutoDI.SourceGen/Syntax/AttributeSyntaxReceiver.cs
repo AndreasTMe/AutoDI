@@ -11,6 +11,8 @@ internal sealed class AttributeSyntaxReceiver : ISyntaxReceiver
 
     public HashSet<AttributeDataCapture> Captures { get; } = new();
 
+    public HashSet<string> Namespaces { get; } = new();
+
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
         if (syntaxNode is not AttributeSyntax attributeSyntax)
@@ -20,5 +22,8 @@ internal sealed class AttributeSyntaxReceiver : ISyntaxReceiver
 
         if (_attributeSyntaxVisitor.Capture.IsValid())
             Captures.Add(_attributeSyntaxVisitor.Capture);
+
+        if (!string.IsNullOrEmpty(_attributeSyntaxVisitor.Namespace))
+            Namespaces.Add(_attributeSyntaxVisitor.Namespace);
     }
 }

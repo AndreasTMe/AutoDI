@@ -11,7 +11,7 @@ namespace AutoDI.SourceGen.Generators;
 [Generator]
 internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
 {
-    private const string SourceFileName = "AutoDIServiceCollectionExtensions.g.cs";
+    private const string ExtensionsFileName = "AutoDIServiceCollectionExtensions.g.cs";
 
     private const string SingletonTemplate = "services.AddSingleton<{0}>({1});";
     private const string ScopedTemplate = "services.AddScoped<{0}>({1});";
@@ -27,19 +27,18 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         if (context.SyntaxReceiver is not AttributeSyntaxReceiver receiver)
             return;
 
+        var assemblyName = context.Compilation.AssemblyName;
+
+        if (string.IsNullOrEmpty(assemblyName))
+            return;
+
         var usings = new HashSet<string>
         {
             "Microsoft.Extensions.DependencyInjection"
         };
 
-        foreach (var (service, implementation, _, _) in receiver.Captures)
-        {
-            if (!string.IsNullOrEmpty(service.Namespace))
-                usings.Add(service.Namespace);
-
-            if (!string.IsNullOrEmpty(implementation.Namespace))
-                usings.Add(implementation.Namespace);
-        }
+        foreach (var @namespace in receiver.Namespaces.Where(n => !string.IsNullOrEmpty(n)))
+            usings.Add(@namespace);
 
         var builder = new StringBuilder();
 
@@ -47,7 +46,7 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
             builder.AppendLine($"using {@using};");
 
         builder.AppendLine();
-        builder.AppendLine("namespace AutoDI.Extensions");
+        builder.AppendLine($"namespace {assemblyName}");
         builder.AppendLine("{");
         builder.AppendLine("\tpublic static class AutoDI_ServiceCollectionExtensions");
         builder.AppendLine("\t{");
@@ -65,9 +64,9 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
             };
 #pragma warning restore CS8509
 
-            var genericArguments = service.Name == implementation.Name
-                ? service.Name
-                : $"{service.Name}, {implementation.Name}";
+            var genericArguments = service == implementation
+                ? service
+                : $"{service}, {implementation}";
             var line = string.Format(template, genericArguments, key ?? "");
 
             builder.AppendLine($"\t\t\t{line}");
@@ -77,6 +76,6 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         builder.AppendLine("\t}");
         builder.AppendLine("}");
 
-        context.AddSource(SourceFileName, builder.ToString());
+        context.AddSource(ExtensionsFileName, builder.ToString());
     }
 }

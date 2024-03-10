@@ -1,5 +1,4 @@
-﻿using AutoDI.Attributes;
-using AutoDI.SourceGen.Internal;
+﻿using AutoDI.SourceGen.Internal;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -22,39 +21,78 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
         Key = 3
     }
 
+    private const string IsDependency = "IsDependency";
+    private const string InjectDependency = "InjectDependency";
+
     public AttributeDataCapture Capture { get; private set; }
+
+    public string Namespace { get; private set; } = string.Empty;
 
     public override void VisitAttribute(AttributeSyntax node)
     {
         base.VisitAttribute(node);
 
-        if (!IsCorrectAttribute(node))
+        if (!node.Name.ToString().Equals(InjectDependency)
+            && !node.Name.ToString().Equals(IsDependency))
             return;
 
-        var classDeclaration = node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
-        Debug.Assert(classDeclaration is not null, "Attribute must be applied to a class.");
+        switch (node.Name.ToString())
+        {
+            case IsDependency:
+                var isDepDeclaration = node.FirstAncestorOrSelf<InterfaceDeclarationSyntax>()
+                    ?? (TypeDeclarationSyntax?)node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+                Debug.Assert(
+                    isDepDeclaration is not null,
+                    "Attribute must be applied to either an interface or a class.");
 
-        var classNamespace = classDeclaration!.FirstAncestorOrSelf<NamespaceDeclarationSyntax>();
-        Debug.Assert(classNamespace is not null, "Class must be in a namespace.");
+                Namespace = GetFullNamespace(isDepDeclaration);
 
-        var arguments = node.ArgumentList?.Arguments;
-        Debug.Assert(arguments is not null, "Attribute must have arguments.");
+                break;
+            case InjectDependency:
+                var injectClassDeclaration = node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+                Debug.Assert(injectClassDeclaration is not null, "Attribute must be applied to a class.");
 
-        var argumentsValues = GetAttributeArgumentsValues(arguments!.Value);
+                var arguments = node.ArgumentList?.Arguments;
+                Debug.Assert(arguments is not null, "Attribute must have arguments.");
 
-        if (!ImplementsOrIsService(classDeclaration, argumentsValues[AttributeArgument.Service]))
-            ThrowHelpers.ThrowAutoDIException(SR.ClassMustEitherImplementOrBeTheService);
+                var argumentsValues = GetAttributeArgumentsValues(arguments!.Value);
 
-        Capture = new AttributeDataCapture(
-            (Name: argumentsValues[AttributeArgument.Service],
-                Namespace: argumentsValues[AttributeArgument.ServiceNamespace]),
-            (Name: classDeclaration.Identifier.ValueText, Namespace: classNamespace!.Name.ToString()),
-            argumentsValues[AttributeArgument.Lifetime],
-            argumentsValues[AttributeArgument.Key]);
+                if (!ImplementsOrIsService(injectClassDeclaration!, argumentsValues[AttributeArgument.Service]))
+                    ThrowHelpers.ThrowAutoDIException(SR.ClassMustEitherImplementOrBeTheService);
+
+                Capture = new AttributeDataCapture(
+                    argumentsValues[AttributeArgument.Service],
+                    injectClassDeclaration!.Identifier.ValueText,
+                    argumentsValues[AttributeArgument.Lifetime],
+                    argumentsValues[AttributeArgument.Key]);
+
+                Namespace = GetFullNamespace(injectClassDeclaration);
+
+                break;
+            default:
+                return;
+        }
     }
 
-    private static bool IsCorrectAttribute(AttributeSyntax node) =>
-        string.Join("", node.Name.ToString().Concat(nameof(Attribute))) == nameof(InjectServiceAttribute);
+    private static string GetFullNamespace(SyntaxNode? node, string currentNamespace = "")
+    {
+        while (true)
+        {
+            switch (node)
+            {
+                case null:
+                    return currentNamespace;
+                case NamespaceDeclarationSyntax namespaceDeclaration:
+                    currentNamespace = currentNamespace.Length > 0
+                        ? $"{namespaceDeclaration.Name}.{currentNamespace}"
+                        : namespaceDeclaration.Name.ToString();
+
+                    break;
+            }
+
+            node = node.Parent;
+        }
+    }
 
     private static Dictionary<AttributeArgument, string> GetAttributeArgumentsValues(
         SeparatedSyntaxList<AttributeArgumentSyntax> arguments)
