@@ -53,8 +53,6 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         builder.AppendLine("\t{");
         builder.AppendLine("\t\tpublic static void AddAutoDI(this IServiceCollection services)");
         builder.AppendLine("\t\t{");
-        
-        var serviceRegistrations = new HashSet<string>();
 
         foreach (var (service, implementation, lifetime, key) in receiver.Captures)
         {
@@ -72,16 +70,13 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
                 : $"{service.Name}, {implementation.Name}";
             var line = string.Format(template, genericArguments, key ?? "");
 
-            serviceRegistrations.Add(line);
+            builder.AppendLine($"\t\t\t{line}");
         }
-
-        foreach (var registration in serviceRegistrations)
-            builder.AppendLine($"\t\t\t{registration}");
 
         builder.AppendLine("\t\t}");
         builder.AppendLine("\t}");
         builder.AppendLine("}");
-        
+
         context.AddSource(SourceFileName, builder.ToString());
     }
 }

@@ -9,7 +9,7 @@ internal sealed class AttributeSyntaxReceiver : ISyntaxReceiver
 {
     private readonly AttributeSyntaxVisitor _attributeSyntaxVisitor = new();
 
-    public List<AttributeDataCapture> Captures { get; } = new();
+    public HashSet<AttributeDataCapture> Captures { get; } = new();
 
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
