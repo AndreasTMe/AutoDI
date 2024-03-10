@@ -17,8 +17,6 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
     private const string ScopedTemplate = "services.AddScoped<{0}>({1});";
     private const string TransientTemplate = "services.AddTransient<{0}>({1});";
 
-    private readonly AttributeSyntaxHandler _attributeSyntaxHandler = new();
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver());
@@ -29,20 +27,12 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         if (context.SyntaxReceiver is not AttributeSyntaxReceiver receiver)
             return;
 
-        var captures = _attributeSyntaxHandler.CaptureAttributeData(receiver.Attributes, context.Compilation);
-        var content = GenerateServiceCollectionExtensions(captures);
-
-        context.AddSource(SourceFileName, content);
-    }
-
-    public static string GenerateServiceCollectionExtensions(List<AttributeDataCapture> captures)
-    {
         var usings = new HashSet<string>
         {
             "Microsoft.Extensions.DependencyInjection"
         };
 
-        foreach (var (service, implementation, _, _) in captures)
+        foreach (var (service, implementation, _, _) in receiver.Captures)
         {
             if (!string.IsNullOrEmpty(service.Namespace))
                 usings.Add(service.Namespace);
@@ -63,8 +53,10 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         builder.AppendLine("\t{");
         builder.AppendLine("\t\tpublic static void AddAutoDI(this IServiceCollection services)");
         builder.AppendLine("\t\t{");
+        
+        var serviceRegistrations = new HashSet<string>();
 
-        foreach (var (service, implementation, lifetime, key) in captures)
+        foreach (var (service, implementation, lifetime, key) in receiver.Captures)
         {
 #pragma warning disable CS8509
             var template = lifetime switch
@@ -80,13 +72,16 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
                 : $"{service.Name}, {implementation.Name}";
             var line = string.Format(template, genericArguments, key ?? "");
 
-            builder.AppendLine($"\t\t\t{line}");
+            serviceRegistrations.Add(line);
         }
+
+        foreach (var registration in serviceRegistrations)
+            builder.AppendLine($"\t\t\t{registration}");
 
         builder.AppendLine("\t\t}");
         builder.AppendLine("\t}");
         builder.AppendLine("}");
-
-        return builder.ToString();
+        
+        context.AddSource(SourceFileName, builder.ToString());
     }
 }

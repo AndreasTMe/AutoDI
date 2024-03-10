@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AutoDI.Attributes\AutoDI.Attributes.csproj" PrivateAssets="All"/>
+        <ProjectReference Include="..\AutoDI.Attributes\AutoDI.Attributes.csproj" PrivateAssets="All" OutputItemType="Analyzer"/>
     </ItemGroup>
 
     <ItemGroup>

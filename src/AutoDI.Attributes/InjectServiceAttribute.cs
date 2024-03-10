@@ -5,21 +5,25 @@ using System;
 namespace AutoDI.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public sealed class RegisterServiceAttribute : Attribute
+    public sealed class InjectServiceAttribute : Attribute
     {
         public Type Service { get; }
 
-        public string ServiceNamespace { get; } // TODO: Is this needed?
-
         public ServiceLifetime Lifetime { get; }
+
+        public string ServiceNamespace { get; }
 
         public string Key { get; }
 
-        public RegisterServiceAttribute(Type service, ServiceLifetime lifetime, string key = "")
+        public InjectServiceAttribute(
+            Type service,
+            ServiceLifetime lifetime,
+            string serviceNamespace = "",
+            string key = "")
         {
             Service = service;
-            ServiceNamespace = service.Namespace ?? string.Empty;
             Lifetime = lifetime;
+            ServiceNamespace = serviceNamespace;
             Key = key;
         }
     }
