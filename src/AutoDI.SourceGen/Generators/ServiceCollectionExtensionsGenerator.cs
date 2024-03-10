@@ -6,14 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AutoDI.SourceGen;
+namespace AutoDI.SourceGen.Generators;
 
 [Generator]
-internal class SourceGenerator : ISourceGenerator
+internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
 {
+    private const string SourceFileName = "AutoDIServiceCollectionExtensions.g.cs";
+
     private const string SingletonTemplate = "services.AddSingleton<{0}>({1});";
     private const string ScopedTemplate = "services.AddScoped<{0}>({1});";
     private const string TransientTemplate = "services.AddTransient<{0}>({1});";
+
+    private readonly AttributeSyntaxHandler _attributeSyntaxHandler = new();
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -25,12 +29,20 @@ internal class SourceGenerator : ISourceGenerator
         if (context.SyntaxReceiver is not AttributeSyntaxReceiver receiver)
             return;
 
+        var captures = _attributeSyntaxHandler.CaptureAttributeData(receiver.Attributes, context.Compilation);
+        var content = GenerateServiceCollectionExtensions(captures);
+
+        context.AddSource(SourceFileName, content);
+    }
+
+    public static string GenerateServiceCollectionExtensions(List<AttributeDataCapture> captures)
+    {
         var usings = new HashSet<string>
         {
             "Microsoft.Extensions.DependencyInjection"
         };
 
-        foreach (var (service, implementation, _, _) in receiver.Captures)
+        foreach (var (service, implementation, _, _) in captures)
         {
             if (!string.IsNullOrEmpty(service.Namespace))
                 usings.Add(service.Namespace);
@@ -52,7 +64,7 @@ internal class SourceGenerator : ISourceGenerator
         builder.AppendLine("\t\tpublic static void AddAutoDI(this IServiceCollection services)");
         builder.AppendLine("\t\t{");
 
-        foreach (var (service, implementation, lifetime, key) in receiver.Captures)
+        foreach (var (service, implementation, lifetime, key) in captures)
         {
 #pragma warning disable CS8509
             var template = lifetime switch
@@ -75,6 +87,6 @@ internal class SourceGenerator : ISourceGenerator
         builder.AppendLine("\t}");
         builder.AppendLine("}");
 
-        context.AddSource("AutoDIServiceCollectionExtensions.g.cs", builder.ToString());
+        return builder.ToString();
     }
 }
