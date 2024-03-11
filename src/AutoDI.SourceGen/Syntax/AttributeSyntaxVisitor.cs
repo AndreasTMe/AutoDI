@@ -17,8 +17,7 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
     {
         Service = 0,
         Lifetime = 1,
-        ServiceNamespace = 2,
-        Key = 3
+        Key = 2
     }
 
     private const string IsDependency = "IsDependency";
@@ -88,6 +87,12 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
                         : namespaceDeclaration.Name.ToString();
 
                     break;
+                case FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclaration:
+                    currentNamespace = currentNamespace.Length > 0
+                        ? $"{fileScopedNamespaceDeclaration.Name}.{currentNamespace}"
+                        : fileScopedNamespaceDeclaration.Name.ToString();
+
+                    break;
             }
 
             node = node.Parent;
@@ -123,8 +128,6 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
             namedArguments[(AttributeArgument)i] = regularArguments[i];
 
         namedArguments[AttributeArgument.Service] = namedArguments[AttributeArgument.Service].Split('(', ')')[1];
-        namedArguments[AttributeArgument.ServiceNamespace] =
-            namedArguments[AttributeArgument.ServiceNamespace].Replace("\"", string.Empty);
 
         return namedArguments;
     }

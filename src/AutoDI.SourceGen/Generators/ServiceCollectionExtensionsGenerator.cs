@@ -13,9 +13,13 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
 {
     private const string ExtensionsFileName = "AutoDIServiceCollectionExtensions.g.cs";
 
-    private const string SingletonTemplate = "services.AddSingleton<{0}>({1});";
-    private const string ScopedTemplate = "services.AddScoped<{0}>({1});";
-    private const string TransientTemplate = "services.AddTransient<{0}>({1});";
+    private const string SingletonTemplate = "services.AddSingleton<{0}>();";
+    private const string ScopedTemplate = "services.AddScoped<{0}>();";
+    private const string TransientTemplate = "services.AddTransient<{0}>();";
+
+    private const string KeyedSingletonTemplate = "services.AddKeyedSingleton<{0}>({1});";
+    private const string KeyedScopedTemplate = "services.AddKeyedScoped<{0}>({1});";
+    private const string KeyedTransientTemplate = "services.AddKeyedTransient<{0}>({1});";
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -56,18 +60,27 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
         foreach (var (service, implementation, lifetime, key) in receiver.Captures)
         {
 #pragma warning disable CS8509
-            var template = lifetime switch
-            {
-                "ServiceLifetime.Singleton" => SingletonTemplate,
-                "ServiceLifetime.Transient" => TransientTemplate,
-                "ServiceLifetime.Scoped"    => ScopedTemplate,
-            };
+            var template = string.IsNullOrEmpty(key)
+                ? lifetime switch
+                {
+                    "ServiceLifetime.Singleton" => SingletonTemplate,
+                    "ServiceLifetime.Transient" => TransientTemplate,
+                    "ServiceLifetime.Scoped"    => ScopedTemplate,
+                }
+                : lifetime switch
+                {
+                    "ServiceLifetime.Singleton" => KeyedSingletonTemplate,
+                    "ServiceLifetime.Transient" => KeyedTransientTemplate,
+                    "ServiceLifetime.Scoped"    => KeyedScopedTemplate,
+                };
 #pragma warning restore CS8509
 
             var genericArguments = service == implementation
                 ? service
                 : $"{service}, {implementation}";
-            var line = string.Format(template, genericArguments, key ?? "");
+            var line = string.IsNullOrEmpty(key)
+                ?string.Format(template, genericArguments)
+                :string.Format(template, genericArguments, key);
 
             builder.AppendLine($"\t\t\t{line}");
         }
