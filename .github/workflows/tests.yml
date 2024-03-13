@@ -3,20 +3,28 @@ name: Tests
 on:
     push:
         paths:
+            - "src/AutoDI.Analyzers/**/*.cs"
+            - "src/AutoDI.Analyzers/**/*.csproj"
             - "src/AutoDI.Attributes/**/*.cs"
             - "src/AutoDI.Attributes/**/*.csproj"
             - "src/AutoDI.SourceGen/**/*.cs"
             - "src/AutoDI.SourceGen/**/*.csproj"
+            - "tests/AutoDI.Analyzers.Tests/**/*.cs"
+            - "tests/AutoDI.Analyzers.Tests/**/*.csproj"
             - "tests/AutoDI.SourceGen.Tests/**/*.cs"
             - "tests/AutoDI.SourceGen.Tests/**/*.csproj"
     pull_request:
         branches:
             - main
         paths:
+            - "src/AutoDI.Analyzers/**/*.cs"
+            - "src/AutoDI.Analyzers/**/*.csproj"
             - "src/AutoDI.Attributes/**/*.cs"
             - "src/AutoDI.Attributes/**/*.csproj"
             - "src/AutoDI.SourceGen/**/*.cs"
             - "src/AutoDI.SourceGen/**/*.csproj"
+            - "tests/AutoDI.Analyzers.Tests/**/*.cs"
+            - "tests/AutoDI.Analyzers.Tests/**/*.csproj"
             - "tests/AutoDI.SourceGen.Tests/**/*.cs"
             - "tests/AutoDI.SourceGen.Tests/**/*.csproj"
 
