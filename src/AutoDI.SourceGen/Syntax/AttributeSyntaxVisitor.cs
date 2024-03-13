@@ -48,13 +48,13 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
 
                 break;
             case InjectDependency:
-                var injectClassDeclaration = node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
-                Debug.Assert(injectClassDeclaration is not null, "Attribute must be applied to a class.");
-
                 var arguments = node.ArgumentList?.Arguments;
                 Debug.Assert(arguments is not null, "Attribute must have arguments.");
 
                 var argumentsValues = GetAttributeArgumentsValues(arguments!.Value);
+
+                var injectClassDeclaration = node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+                Debug.Assert(injectClassDeclaration is not null, "Attribute must be applied to a class.");
 
                 if (!ImplementsOrIsService(injectClassDeclaration!, argumentsValues[AttributeArgument.Service]))
                     ThrowHelpers.ThrowAutoDIException(SR.ClassMustEitherImplementOrBeTheService);
