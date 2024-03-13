@@ -62,27 +62,27 @@ namespace AutoDI.Analyzers {
         /// <summary>
         ///   Looks up a localized string similar to A dependency must either implement, inherit or be the injected type..
         /// </summary>
-        internal static string AutoDI0001Description {
+        internal static string AutoDI1000Description {
             get {
-                return ResourceManager.GetString("AutoDI0001Description", resourceCulture);
+                return ResourceManager.GetString("AutoDI1000Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Type &apos;{0}&apos; must either implement, inherit or be the injected type &apos;{1}&apos;.
         /// </summary>
-        internal static string AutoDI0001MessageFormat {
+        internal static string AutoDI1000MessageFormat {
             get {
-                return ResourceManager.GetString("AutoDI0001MessageFormat", resourceCulture);
+                return ResourceManager.GetString("AutoDI1000MessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The.
         /// </summary>
-        internal static string AutoDI0001Title {
+        internal static string AutoDI1000Title {
             get {
-                return ResourceManager.GetString("AutoDI0001Title", resourceCulture);
+                return ResourceManager.GetString("AutoDI1000Title", resourceCulture);
             }
         }
     }

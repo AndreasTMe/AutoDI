@@ -63,15 +63,15 @@ internal class ServiceCollectionExtensionsGenerator : ISourceGenerator
             var template = string.IsNullOrEmpty(key)
                 ? lifetime switch
                 {
-                    "ServiceLifetime.Singleton" => SingletonTemplate,
-                    "ServiceLifetime.Transient" => TransientTemplate,
-                    "ServiceLifetime.Scoped"    => ScopedTemplate,
+                    "DependencyLifetime.Singleton" => SingletonTemplate,
+                    "DependencyLifetime.Transient" => TransientTemplate,
+                    "DependencyLifetime.Scoped"    => ScopedTemplate,
                 }
                 : lifetime switch
                 {
-                    "ServiceLifetime.Singleton" => KeyedSingletonTemplate,
-                    "ServiceLifetime.Transient" => KeyedTransientTemplate,
-                    "ServiceLifetime.Scoped"    => KeyedScopedTemplate,
+                    "DependencyLifetime.Singleton" => KeyedSingletonTemplate,
+                    "DependencyLifetime.Transient" => KeyedTransientTemplate,
+                    "DependencyLifetime.Scoped"    => KeyedScopedTemplate,
                 };
 #pragma warning restore CS8509
 

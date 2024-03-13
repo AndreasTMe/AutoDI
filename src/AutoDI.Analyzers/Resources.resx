@@ -18,13 +18,13 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="AutoDI0001Title" xml:space="preserve">
+    <data name="AutoDI1000Title" xml:space="preserve">
         <value>The</value>
     </data>
-    <data name="AutoDI0001MessageFormat" xml:space="preserve">
+    <data name="AutoDI1000MessageFormat" xml:space="preserve">
         <value>Type '{0}' must either implement, inherit or be the injected type '{1}'</value>
     </data>
-    <data name="AutoDI0001Description" xml:space="preserve">
+    <data name="AutoDI1000Description" xml:space="preserve">
         <value>A dependency must either implement, inherit or be the injected type.</value>
     </data>
 </root>

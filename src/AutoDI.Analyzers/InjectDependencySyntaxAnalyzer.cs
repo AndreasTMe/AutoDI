@@ -10,20 +10,20 @@ using System.Linq;
 namespace AutoDI.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class InjectDependencySyntaxAnalyzer : DiagnosticAnalyzer
+internal class InjectDependencySyntaxAnalyzer : DiagnosticAnalyzer
 {
     private const string InjectDependency = "InjectDependency";
 
-    private const string DiagnosticId = "AutoDI0001";
+    private const string DiagnosticId = "AutoDI1000";
 
     private static readonly LocalizableString Title = new LocalizableResourceString(
-        nameof(Resources.AutoDI0001Title),
+        nameof(Resources.AutoDI1000Title),
         Resources.ResourceManager,
         typeof(Resources));
 
     private static readonly LocalizableString MessageFormat =
         new LocalizableResourceString(
-            nameof(Resources.AutoDI0001MessageFormat),
+            nameof(Resources.AutoDI1000MessageFormat),
             Resources.ResourceManager,
             typeof(Resources));
 
@@ -31,7 +31,7 @@ public class InjectDependencySyntaxAnalyzer : DiagnosticAnalyzer
 
     private static readonly LocalizableString Description =
         new LocalizableResourceString(
-            nameof(Resources.AutoDI0001Description),
+            nameof(Resources.AutoDI1000Description),
             Resources.ResourceManager,
             typeof(Resources));
 

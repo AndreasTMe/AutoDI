@@ -1,6 +1,4 @@
-﻿using AutoDI.SourceGen.Internal;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -55,9 +53,6 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
 
                 var injectClassDeclaration = node.FirstAncestorOrSelf<ClassDeclarationSyntax>();
                 Debug.Assert(injectClassDeclaration is not null, "Attribute must be applied to a class.");
-
-                if (!ImplementsOrIsService(injectClassDeclaration!, argumentsValues[AttributeArgument.Service]))
-                    ThrowHelpers.ThrowAutoDIException(SR.ClassMustEitherImplementOrBeTheService);
 
                 Capture = new AttributeDataCapture(
                     argumentsValues[AttributeArgument.Service],
@@ -131,13 +126,4 @@ internal sealed class AttributeSyntaxVisitor : CSharpSyntaxVisitor
 
         return namedArguments;
     }
-
-    private static bool ImplementsOrIsService(BaseTypeDeclarationSyntax typeDeclaration, string service) =>
-        (typeDeclaration
-                .BaseList is not null
-            && typeDeclaration
-                .BaseList
-                .Types
-                .Any(t => t.ToString() == service))
-        || service == typeDeclaration.Identifier.Text;
 }
