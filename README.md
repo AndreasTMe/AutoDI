@@ -28,6 +28,9 @@ public interface IMyService
 MyService.cs
 
 ```csharp
+using AutoDI.Attributes;
+using MyNamespace.Services.Interfaces;
+
 namespace MyNamespace.Services;
 
 [InjectDependency(typeof(IMyService), DependencyLifetime.Singleton)]
@@ -82,6 +85,9 @@ public interface IMyService
 MyFirstService.cs
 
 ```csharp
+using AutoDI.Attributes;
+using MyNamespace.Services.Interfaces;
+
 namespace MyNamespace.Services;
 
 [InjectDependency(typeof(IMyService), DependencyLifetime.Singleton, "key1")]
@@ -97,6 +103,9 @@ public class MyFirstService : IMyService
 MySecondService.cs
 
 ```csharp
+using AutoDI.Attributes;
+using MyNamespace.Services.Interfaces;
+
 namespace MyNamespace.Services;
 
 [InjectDependency(typeof(IMyService), DependencyLifetime.Singleton, "key2")]
