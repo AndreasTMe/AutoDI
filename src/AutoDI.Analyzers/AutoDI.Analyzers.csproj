@@ -8,6 +8,8 @@
 
         <IsPackable>false</IsPackable>
         <IsRoslynComponent>true</IsRoslynComponent>
+        
+        <NoWarn>RS2007</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,8 +42,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="AutoDI.Analyzers.Shipped.md" />
-        <AdditionalFiles Include="AutoDI.Analyzers.Unshipped.md" />
+        <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+        <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
     </ItemGroup>
 
 </Project>
