@@ -16,6 +16,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI.Analyzers.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDI.Analyzers", "src\AutoDI.Analyzers\AutoDI.Analyzers.csproj", "{6D8094BA-DD5E-49FC-87A9-CEC8EA00BCE6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{E1FD9952-58BC-4C3A-A1B9-0B6668B8F302}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{602C246D-64A7-48EE-A1C1-1B8092F14010}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\tests.yml = .github\workflows\tests.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +35,7 @@ Global
 		{BE318B5F-2622-43DA-B767-FA4A1AB06B9C} = {F23131C9-72F5-411F-AFBC-989795AA22FB}
 		{A5232B34-B231-4750-B976-BB4DD9209E8F} = {F23131C9-72F5-411F-AFBC-989795AA22FB}
 		{6D8094BA-DD5E-49FC-87A9-CEC8EA00BCE6} = {01399AED-2A7B-4251-ADB4-63EA0B4ACB1B}
+		{602C246D-64A7-48EE-A1C1-1B8092F14010} = {E1FD9952-58BC-4C3A-A1B9-0B6668B8F302}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D4A46710-A009-44E2-8449-5A09C967DEAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
