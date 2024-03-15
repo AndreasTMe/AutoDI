@@ -14,7 +14,7 @@ internal class InjectDependencySyntaxAnalyzer : DiagnosticAnalyzer
 {
     private const string InjectDependency = "InjectDependency";
 
-    private const string DiagnosticId = "AutoDI1000";
+    public const string DiagnosticId = "AutoDI1000";
 
     private static readonly LocalizableString Title = new LocalizableResourceString(
         nameof(Resources.AutoDI1000Title),
